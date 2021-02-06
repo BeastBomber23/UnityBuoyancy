@@ -7,4 +7,5 @@ Also i might update this script in the future.
 # Setup
 In the buoyancy script replace main with the name of the player gameobject and in a player script put "public float seaLevel;".
 
+Recomended Settings
 ![Recomended Settings](https://i.imgur.com/2yB0ljv.png)
