@@ -5,11 +5,10 @@ using UnityEngine;
 public class Buoyancy : MonoBehaviour
 {
 
-    public Vector3 force, lerpSpeed;
-    public float rotateSpeed, floatOffset, viscosity;
+    public Vector3 force, lerpSpeed, normalRotation, noRotateAxis;
+    public float floatOffset, viscosity;
 
     private float seaLevel;
-    
     private GameObject main;
     private Rigidbody rb;
     private Collider collider;
@@ -50,8 +49,6 @@ public class Buoyancy : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        print(other.transform.name);
-
         if(other.transform.tag == "Water")
         {
             inWater = true;
@@ -60,7 +57,7 @@ public class Buoyancy : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.transform.tag == "Water")
+        if (other.transform.tag == "Water") 
         {
             inWater = false;
         }
@@ -68,15 +65,29 @@ public class Buoyancy : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (transform.position.y < seaLevel & inWater)
+        if (transform.position.y - floatOffset < seaLevel & inWater)
         {
-
             rb.AddForce(Vector3.Lerp(new Vector3(0,Mathf.Abs(transform.position.y) * force.y, 0), rb.velocity, lerpSpeed.y));
             rb.AddForce(Vector3.Lerp(rb.velocity * -1 * viscosity, rb.velocity, lerpSpeed.y));
-            Quaternion q = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * lerpSpeed.y);
 
+            if(noRotateAxis.x == 1)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(transform.rotation.eulerAngles.x, normalRotation.y, normalRotation.z), Time.deltaTime * lerpSpeed.y);
+            }
+            else if(noRotateAxis.y == 1)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(normalRotation.x, transform.rotation.eulerAngles.y, normalRotation.z), Time.deltaTime * lerpSpeed.y);
+            }
+            else if (noRotateAxis.z == 1)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(normalRotation.x, normalRotation.y, transform.rotation.eulerAngles.z), Time.deltaTime * lerpSpeed.y);
+            }
         }
+    }
+
+    void Update()
+    {
+        normalRotation.z = transform.rotation.z;
     }
 
 }
