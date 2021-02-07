@@ -8,7 +8,8 @@ public class Buoyancy : MonoBehaviour
     public Vector3 force, lerpSpeed;
     public float rotateSpeed, floatOffset, viscosity;
 
-    public float seaLevel;
+    private float seaLevel;
+    
     private GameObject main;
     private Rigidbody rb;
     private Collider collider;
